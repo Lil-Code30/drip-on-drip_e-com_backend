@@ -1,0 +1,31 @@
+{
+  "name": "drip-on-drip_e-com_backend",
+  "version": "1.0.0",
+  "description": "DripOnDrip Backend",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "watch": "node --watch server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lil-Code30/drip-on-drip_e-com_backend.git"
+  },
+  "author": "Ismael Loko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lil-Code30/drip-on-drip_e-com_backend/issues"
+  },
+  "homepage": "https://github.com/Lil-Code30/drip-on-drip_e-com_backend#readme",
+  "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "@prisma/extension-accelerate": "^2.0.2",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "prisma": "^6.11.1",
+    "uuid": "^11.1.0"
+  }
+}
