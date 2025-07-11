@@ -1,4 +1,4 @@
-function generateSKU(product) {
+export function generateSKU(product) {
   // Example: First 3 letters of name + category + random 4 digits
   const namePart = product.name.substring(0, 3).toUpperCase();
   const categoryPart = product.category.substring(0, 3).toUpperCase();
