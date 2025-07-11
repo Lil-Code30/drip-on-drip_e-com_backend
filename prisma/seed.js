@@ -1,56 +1,66 @@
-import { PrismaClient } from "@prisma/client/default.js";
+import { PrismaClient } from "../generated/prisma/client.js";
 import { v4 as uuid4 } from "uuid";
 import { generateSKU } from "../utils/utils.js";
 import { allProducts } from "../utils/data.js";
 
-const productId = uuid4();
-const sku = generateSKU({
-  name: "Blue & Black Check Shirt",
-  category: "Fashion Trends",
-});
-
+/*
+When you want to use prisma migrate dev or prisma migrate reset without seeding, you can pass the --skip-seed flag.
+*/
 const prisma = new PrismaClient();
+
 async function main() {
-  const BlueBlackCheckShirt = await prisma.Product.upsert({
-    where: { id: productId },
-    update: {},
-    create: {
-      id: productId,
-      title: "Blue & Black Check Shirt",
-      description:
-        "The Blue & Black Check Shirt is a stylish and comfortable men's shirt featuring a classic check pattern. Made from high-quality fabric, it's suitable for both casual and semi-formal occasions.",
-      categoryId: {
-        connect: { id: 2 },
+  for (const product of allProducts) {
+    // Ensure category exists or create it
+    const category = await prisma.Category.upsert({
+      where: { name: product.category },
+      update: {},
+      create: { name: product.category },
+    });
+    // Ensure brand exists or create it
+    const brand = await prisma.Brand.upsert({
+      where: { name: product.brand },
+      update: {},
+      create: { name: product.brand },
+    });
+    // Generate a UUID for product id
+    const productId = uuid4();
+    // Generate SKU if not present
+    const sku =
+      product.sku ||
+      generateSKU({
+        name: product.title || product.name,
+        category: product.category,
+      });
+    // Upsert product
+    const createdProduct = await prisma.Product.upsert({
+      where: { id: productId },
+      update: {},
+      create: {
+        id: productId,
+        name: product.title || product.name,
+        images: product.images,
+        description: product.description,
+        price: product.price,
+        categoryId: category.id,
+        discountPercentage: Math.round(product.discountPercentage || 0),
+        rating: product.rating || 0,
+        stock: product.stock || 0,
+        tags: product.tags || [],
+        brandId: brand.id,
+        sku,
+        weight: product.weight || null,
+        dimensions: product.dimensions ? product.dimensions : null,
+        warrantyInformation: product.warrantyInformation || null,
+        shippingInformation: product.shippingInformation || null,
+        availabilityStatus: product.availabilityStatus || "in_stock",
+        returnPolicy: product.returnPolicy || null,
+        minimumOrderQuantity: product.minimumOrderQuantity || 1,
       },
-      price: 29.99,
-      discountPercentage: 15.35,
-      rating: 3.64,
-      stock: 38,
-      tags: ["clothing", "men's shirts"],
-      brandId: {
-        connect: { id: 1 },
-      },
-      sku: sku,
-      dimensions: JSON.parse(`{
-        "width": 27.49,
-        "height": 23.73,
-        "depth": 28.61
-      }`),
-      warrantyInformation: "3 year warranty",
-      shippingInformation: "Ships in 3-5 business days",
-      availabilityStatus: "In Stock",
-      returnPolicy: "30 days return policy",
-      minimumOrderQuantity: 18,
-      images: [
-        "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/1.webp",
-        "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/2.webp",
-        "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/3.webp",
-        "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/4.webp",
-      ],
-    },
-  });
-  console.log("Blue & Black Check Shirt created:", BlueBlackCheckShirt);
+    });
+    console.log(`Product created: ${createdProduct.name}`);
+  }
 }
+
 main()
   .then(async () => {
     await prisma.$disconnect();
