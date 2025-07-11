@@ -1,3 +1,6 @@
+#custum files
+utils/data.js
+
 # Logs
 logs
 *.log
