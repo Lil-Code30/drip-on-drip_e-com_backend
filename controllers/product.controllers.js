@@ -24,11 +24,13 @@ export const getAllProducts = async (req, res) => {
   const conditions = {
     isActive: true,
   };
-
+  const c = category.split(",");
   // verify if any above params exist
   if (category) {
     conditions.category = {
-      name: category,
+      name: {
+        in: c,
+      },
     };
   }
 
