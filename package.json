@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/Lil-Code30/drip-on-drip_e-com_backend#readme",
   "dependencies": {
+    "@prisma/adapter-pg": "^6.11.1",
     "@prisma/client": "^6.11.1",
     "@prisma/extension-accelerate": "^2.0.2",
     "bcrypt": "^6.0.0",

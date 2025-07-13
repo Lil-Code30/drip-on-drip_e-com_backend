@@ -7,6 +7,7 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -111,7 +112,7 @@ model Reviews{
 }
 
 model Cart{
-  id Int @id @default(autoincrement())
+  id String @unique
   userId Int @unique
   profile Profile  @relation(fields: [userId], references: [id])
   items CartItem[]
@@ -125,7 +126,7 @@ model CartItem{
   product Product  @relation(fields: [productId], references: [id])
   quantity Int @default(1)
   price Float
-  cartId Int
+  cartId String
   cart Cart @relation(fields: [cartId], references: [id])
 }
 
