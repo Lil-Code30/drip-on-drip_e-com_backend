@@ -6,6 +6,14 @@ export function generateSKU(product) {
   return `${namePart}-${categoryPart}-${randomPart}`;
 }
 
-// Usage:
-const sku = generateSKU({ name: "T-shirt", category: "Apparel" });
-// Example output: "T-S-APP-4821"
+export function emailVerificationCode() {
+  let result = "";
+
+  for (let i = 0; i < 6; i++) {
+    result += Math.floor(Math.random() * 10);
+  }
+
+  return result;
+}
+
+//function

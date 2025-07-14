@@ -1,0 +1,11 @@
+
+
+    "email": "li@gamil.com",
+    "password": "azerty237"
+
+
+    "email": "licode@gamil.com",
+    "password": "azerty237"
+
+    "email": "code@gamil.com",
+    "password": "azerty237"

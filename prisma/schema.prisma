@@ -20,6 +20,7 @@ model User {
   role      Role @default(USER)
   email     String  @unique
   password String
+  token String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   profile Profile?
@@ -34,8 +35,8 @@ model Profile {
   id        Int  @id @default(autoincrement())
   userId    Int  @unique
   user      User @relation(fields: [userId], references: [id])
-  firstName String
-  lastName  String
+  firstName String?
+  lastName  String?
   bio       String?
   gender  String?
   avatarUrl String?
@@ -52,6 +53,15 @@ model Profile {
   reviews Reviews[]
   cart Cart? 
   orders Order[]
+}
+
+model  EmailVerification{
+  id Int @id @default(autoincrement())
+  userId Int
+  email String 
+  code String 
+  createdAt DateTime 
+  expiredAt DateTime
 }
 
 model Product {

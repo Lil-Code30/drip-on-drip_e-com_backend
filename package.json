@@ -29,9 +29,11 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "nodemailer": "^7.0.5",
     "prisma": "^6.11.1"
   }
 }
