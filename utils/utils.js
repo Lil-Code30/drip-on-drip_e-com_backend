@@ -119,3 +119,44 @@ export function userWithoutPassword(user) {
     isVerified: user.isVerified,
   };
 }
+
+export function getDefinedQueryData(req) {
+  /*
+        "firstName": "loko",
+        "lastName": "Ismael",
+        "bio": null,
+        "gender": null,
+        "avatarUrl": null,
+        "addressLine1": null,
+        "addressLine2": null,
+        "city": null,
+        "state": null,
+        "postalCode": null,
+        "country": null,
+        "phoneNumber": null,
+        "dateOfBirth": null,
+  */
+  const {
+    firstName,
+    lastName,
+    bio,
+    gender,
+    avatarUrl,
+    addressLine1,
+    addressLine2,
+    city,
+    state,
+    postalCode,
+    country,
+    phoneNumber,
+  } = req;
+
+  const updateData = {};
+
+  // Only add fields that are provided
+  if (name !== undefined) updateData.name = name;
+  if (email !== undefined) updateData.email = email;
+  if (phone !== undefined) updateData.phone = phone;
+  if (address !== undefined) updateData.address = address;
+  if (bio !== undefined) updateData.bio = bio;
+}
