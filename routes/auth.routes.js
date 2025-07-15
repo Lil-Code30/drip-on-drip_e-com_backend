@@ -5,12 +5,12 @@ import {
   logoutUser,
 } from "../controllers/auth.controllers.js";
 
-import { authMiddlewarer } from "../middlewares/auth.middlewares.js";
+import { authMiddleware } from "../middlewares/auth.middlewares.js";
 
 const authRouter = express.Router();
 
 authRouter.post("/register", registerUser);
 authRouter.post("/login", loginUser);
-authRouter.post("/logout", authMiddlewarer, logoutUser);
+authRouter.post("/logout", authMiddleware, logoutUser);
 
 export default authRouter;
