@@ -17,18 +17,6 @@ export const authMiddleware = async (req, res, next) => {
     // Verify the token
     // If token is invalid or expired, we need to logout the user
     // and return an error response
-    if (isTokenExpired(token)) {
-      // Logout the user
-      await Prisma.user.update({
-        where: {
-          id: req.user.id,
-        },
-        data: {
-          token: null,
-        },
-      });
-      return res.status(401).json({ error: "Token is expired" });
-    }
 
     const decode = jwt.verify(token, process.env.JWT_SECRET_WORD);
     if (!decode) {

@@ -182,3 +182,20 @@ export const clearUserCart = async (req, res) => {
     res.status(500).json({ message: "Error when clearing the user cart " });
   }
 };
+
+export const deletetCart = async (req, res) => {
+  try {
+    const { cartId } = req.body;
+    await Prisma.cart.deleteMany({
+      where: {
+        id: cartId,
+      },
+    });
+
+    res.status(200).json({ message: "Cart deleted" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ Error: "Error when deleting user cart " + err.message });
+  }
+};

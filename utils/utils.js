@@ -28,6 +28,11 @@ export function generateToken(userId) {
     expiresIn: "1h",
   });
 }
+export function generateRefreshToken(userId) {
+  return jwt.sign({ userId }, process.env.JWT_SECRET_WORD, {
+    expiresIn: "30d",
+  });
+}
 
 // Verify the token
 export function verifyToken(token) {

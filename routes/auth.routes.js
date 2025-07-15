@@ -21,5 +21,5 @@ authRouter.get(
   authMiddleware,
   requestEmailVerification
 );
-authRouter.post("/refresh-token", refreshToken);
+authRouter.get("/refresh-token", refreshToken);
 export default authRouter;

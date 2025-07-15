@@ -20,16 +20,26 @@ model User {
   role      Role @default(USER)
   email     String  @unique
   password String
-  token String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   profile Profile?
   isActive Boolean @default(true)
   isVerified Boolean @default(false)
+  refreshToken refreshToken[]
 }
 enum Role {
   USER
   ADMIN
+}
+
+model refreshToken {
+  id String @id
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  refresToken String
+  createdAt DateTime 
+  expiredAt DateTime
+  isRevoked Boolean @default(false)
 }
 model Profile {
   id        Int  @id @default(autoincrement())
@@ -122,7 +132,7 @@ model Reviews{
 }
 
 model Cart{
-  id String @unique
+  id String @id @unique 
   userId Int @unique
   profile Profile  @relation(fields: [userId], references: [id])
   items CartItem[]

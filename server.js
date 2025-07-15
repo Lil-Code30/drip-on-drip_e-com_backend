@@ -5,18 +5,23 @@ import productRouter from "./routes/product.routes.js";
 import reviewsRoute from "./routes/reviews.routes.js";
 import cartRoute from "./routes/cart.routes.js";
 import authRouter from "./routes/auth.routes.js";
+import userRoute from "./routes/user.routes.js";
+import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(cors());
+//  Use cookie-parser middleware
+app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/products", productRouter);
 app.use("/api/product/reviews", reviewsRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
