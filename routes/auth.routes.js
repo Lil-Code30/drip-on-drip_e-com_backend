@@ -6,6 +6,7 @@ import {
   verifyEmail,
   requestEmailVerification,
   refreshToken,
+  changerUserPassword,
 } from "../controllers/auth.controllers.js";
 
 import { authMiddleware } from "../middlewares/auth.middlewares.js";
@@ -22,4 +23,5 @@ authRouter.get(
   requestEmailVerification
 );
 authRouter.get("/refresh-token", refreshToken);
+authRouter.put("/change-password", authMiddleware, changerUserPassword);
 export default authRouter;

@@ -277,3 +277,40 @@ export const refreshToken = async (req, res) => {
     res.status(500).json({ message: `Error refreshing token ${err.message}` });
   }
 };
+
+// change user password
+export const changerUserPassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const token = req.token;
+    const user = req.user;
+
+    // fetch user password in db
+    const userDB = await Prisma.user.findUnique({
+      where: {
+        id: user.userId,
+      },
+    });
+    const isValidPassword = await bcrypt.compare(oldPassword, userDB.password);
+
+    if (!isValidPassword) {
+      return res.status(401).json({ message: "Old password incorrect" });
+    }
+
+    const hashNewPassword = await bcrypt.hash(newPassword, 10);
+    await Prisma.user.update({
+      where: {
+        id: user.userId,
+      },
+      data: {
+        password: hashNewPassword,
+      },
+    });
+
+    res.status(200).json({ message: "Password updated successfully", token });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ Error: "Error when changing user password" + err.message });
+  }
+};
