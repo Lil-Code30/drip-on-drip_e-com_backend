@@ -1,28 +1,23 @@
 import Prisma from "../utils/dbConnection.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 
-import { emailVerificationCode } from "../utils/utils.js";
+import {
+  verifyToken,
+  sendEmailVerificationCode,
+  userWithoutPassword,
+  generateToken,
+} from "../utils/utils.js";
 
-// Configure nodemailer with environment variables
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "localhost",
-  port: parseInt(process.env.SMTP_PORT) || 25,
-  secure: process.env.SMTP_SECURE === "true",
-  auth: {
-    user: process.env.SMTP_USER || "",
-    pass: process.env.SMTP_PASS || "",
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
-
+// Register a new user
 export const registerUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // data verification here
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
+    }
 
     // verify if email already exist
     const emailExist = await Prisma.user.findFirst({
@@ -46,13 +41,7 @@ export const registerUser = async (req, res) => {
     });
     if (createUser) {
       //user Data without password
-      const userInfos = {
-        userId: createUser.id,
-        userEmail: createUser.email,
-        userRole: createUser.role,
-        isActive: createUser.isActive,
-        isVerified: createUser.isVerified,
-      };
+      const userInfos = userWithoutPassword(createUser);
 
       // create user profile
       await Prisma.profile.create({
@@ -61,9 +50,7 @@ export const registerUser = async (req, res) => {
         },
       });
 
-      const token = jwt.sign(userInfos, process.env.JWT_SECRET_WORD, {
-        expiresIn: "2h",
-      });
+      const token = generateToken(userInfos.userId);
       await Prisma.user.update({
         where: {
           id: userInfos.userId,
@@ -73,36 +60,8 @@ export const registerUser = async (req, res) => {
         },
       });
 
-      // send verification code
-      const emailCode = emailVerificationCode();
-
-      const mailOptions = {
-        from: "dripondrip@gmail.com",
-        to: userInfos.userEmail,
-        subject: "Email Verification Code",
-        text: `This is your email verification code: ${emailCode}`,
-        html: `<p> This is your email verification code: <strong>${emailCode}</strong></p>`,
-      };
-
-      const emailSend = await transporter.sendMail(mailOptions);
-
-      if (emailSend) {
-        const now = new Date();
-        const createdAt = now.toISOString();
-        const expiredAt = new Date(
-          now.getTime() + 10 * 60 * 1000
-        ).toISOString();
-        createdAt +
-          (await Prisma.emailVerification.create({
-            data: {
-              userId: userInfos.userId,
-              email: userInfos.userEmail,
-              code: emailCode,
-              createdAt,
-              expiredAt,
-            },
-          }));
-      }
+      // send email verification code
+      await sendEmailVerificationCode(userInfos.userEmail, userInfos.userId);
 
       res.status(201).json({ message: "account created successfully", token });
     } else {
@@ -131,18 +90,10 @@ export const loginUser = async (req, res) => {
       );
       if (correctPassword) {
         if (userCredentials.isActive === true) {
-          //
-          const payload = {
-            userId: userCredentials.id,
-            userEmail: userCredentials.email,
-            userRole: userCredentials.role,
-            isActive: userCredentials.isActive,
-            isVerified: userCredentials.isVerified,
-          };
-          const token = jwt.sign(payload, process.env.JWT_SECRET_WORD, {
-            expiresIn: "2h",
-          });
-
+          // jwt pay load
+          const payload = userWithoutPassword(userCredentials);
+          // generate token
+          const token = generateToken(payload.userId);
           return res
             .status(200)
             .json({ message: "user connected successfully.", token });
@@ -169,10 +120,93 @@ export const loginUser = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
   try {
+    const userId = req.user.userId;
+    // update user token to null
+    await Prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        token: null,
+      },
+    });
     res.status(200).json({ message: "user logout" });
   } catch (err) {
     res
       .status(500)
       .json({ error: `error when deconnecting the user ${err.message}` });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  try {
+    const { userId, code } = req.body;
+
+    const emailVerification = await Prisma.emailVerification.findFirst({
+      where: {
+        userId: userId,
+        code: code,
+      },
+    });
+
+    if (emailVerification) {
+      const now = new Date();
+      if (now < new Date(emailVerification.expiredAt)) {
+        await Prisma.user.update({
+          where: { id: userId },
+          data: { isVerified: true },
+        });
+        return res.status(200).json({ message: "Email verified successfully" });
+      } else {
+        return res.status(400).json({ message: "Verification code expired" });
+      }
+    } else {
+      return res.status(404).json({ message: "Invalid verification code" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: `Error verifying email ${err.message}` });
+  }
+};
+
+// ask for email verification code
+export const requestEmailVerification = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await Prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // send email verification code
+    await sendEmailVerificationCode(user.email, userId);
+
+    return res.status(200).json({ message: "Verification email sent" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: `Error requesting email verification ${err.message}` });
+  }
+};
+
+// refresh token
+export const refreshToken = async (req, res) => {
+  try {
+    const token = req.token;
+    if (!token) {
+      return res.status(401).json({ message: "Token is missing" });
+    }
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+
+    const newToken = generateToken(decoded.userId);
+    res.status(200).json({ token: newToken });
+  } catch (err) {
+    res.status(500).json({ message: `Error refreshing token ${err.message}` });
   }
 };

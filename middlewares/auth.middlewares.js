@@ -1,17 +1,33 @@
 import Prisma from "../utils/dbConnection.js";
 import jwt from "jsonwebtoken";
+import {
+  getTokenFromHeaders,
+  userWithoutPassword,
+  isTokenExpired,
+} from "../utils/utils.js";
 
 export const authMiddleware = async (req, res, next) => {
   try {
-    const authHeader = req.headers["authorization"];
+    const token = getTokenFromHeaders(req.headers);
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ error: "Bearer token required" });
-    }
-
-    const token = authHeader.substring(7);
     if (!token) {
       return res.status(401).json({ error: "Token is missing" });
+    }
+
+    // Verify the token
+    // If token is invalid or expired, we need to logout the user
+    // and return an error response
+    if (isTokenExpired(token)) {
+      // Logout the user
+      await Prisma.user.update({
+        where: {
+          id: req.user.id,
+        },
+        data: {
+          token: null,
+        },
+      });
+      return res.status(401).json({ error: "Token is expired" });
     }
 
     const decode = jwt.verify(token, process.env.JWT_SECRET_WORD);
@@ -32,13 +48,8 @@ export const authMiddleware = async (req, res, next) => {
       return res.status(403).json({ error: "User is not active" });
     }
 
-    req.user = {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      isActive: user.isActive,
-      isVerified: user.isVerified,
-    };
+    req.user = userWithoutPassword(user);
+    // Attach the token to the request object for further use
     req.token = token;
 
     next();
@@ -48,6 +59,6 @@ export const authMiddleware = async (req, res, next) => {
     } else if (err.name === "JsonWebTokenError") {
       return res.status(401).json({ message: "Wrong Token" });
     }
-    res.status(500).json({ message: "Wrong When verifying the token" });
+    res.status(500).json({ message: "Error When verifying the user token" });
   }
 };

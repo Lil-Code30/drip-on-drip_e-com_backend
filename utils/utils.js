@@ -1,4 +1,9 @@
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import Prisma from "./dbConnection.js";
+
+// Generate a SKU for a product
+// Example: "ABC-1234-5678"
 export function generateSKU(product) {
   // Example: First 3 letters of name + category + random 4 digits
   const namePart = product.name.substring(0, 3).toUpperCase();
@@ -7,6 +12,7 @@ export function generateSKU(product) {
   return `${namePart}-${categoryPart}-${randomPart}`;
 }
 
+// Generate a random email verification code
 export function emailVerificationCode() {
   let result = "";
 
@@ -23,6 +29,7 @@ export function generateToken(userId) {
   });
 }
 
+// Verify the token
 export function verifyToken(token) {
   try {
     return jwt.verify(token, process.env.JWT_SECRET_WORD);
@@ -30,6 +37,8 @@ export function verifyToken(token) {
     throw new Error("Invalid token");
   }
 }
+
+// Check if token is expired
 export function isTokenExpired(token) {
   try {
     const decoded = jwt.decode(token);
@@ -42,10 +51,66 @@ export function isTokenExpired(token) {
   }
 }
 
+// Get token from headers
 export function getTokenFromHeaders(headers) {
   const authHeader = headers["authorization"];
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new Error("Bearer token required");
   }
   return authHeader.substring(7); // Remove "Bearer " prefix
+}
+
+// send email function
+export async function sendEmailVerificationCode(email, id) {
+  // Configure nodemailer with environment variables
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || "localhost",
+    port: parseInt(process.env.SMTP_PORT) || 25,
+    secure: process.env.SMTP_SECURE === "true",
+    auth: {
+      user: process.env.SMTP_USER || "",
+      pass: process.env.SMTP_PASS || "",
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  // send verification code
+  const emailCode = emailVerificationCode();
+
+  const mailOptions = {
+    from: "dripondrip@gmail.com",
+    to: email,
+    subject: "Email Verification Code",
+    text: `This is your email verification code: ${emailCode}`,
+    html: `<p> This is your email verification code: <strong>${emailCode}</strong></p>`,
+  };
+
+  const emailSend = await transporter.sendMail(mailOptions);
+  if (emailSend) {
+    const now = new Date();
+    const createdAt = now.toISOString();
+    const expiredAt = new Date(now.getTime() + 10 * 60 * 1000).toISOString();
+    await Prisma.emailVerification.create({
+      data: {
+        userId: id,
+        email: email,
+        code: emailCode,
+        createdAt,
+        expiredAt,
+      },
+    });
+  }
+}
+
+// user without password
+export function userWithoutPassword(user) {
+  return {
+    userId: user.id,
+    userEmail: user.email,
+    userRole: user.role,
+    isActive: user.isActive,
+    isVerified: user.isVerified,
+  };
 }
