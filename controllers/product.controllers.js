@@ -24,9 +24,10 @@ export const getAllProducts = async (req, res) => {
   const conditions = {
     isActive: true,
   };
-  const c = category.split(",");
+
   // verify if any above params exist
   if (category) {
+    const c = category.split(","); // [shoes, shirts]
     conditions.category = {
       name: {
         in: c,
@@ -40,7 +41,7 @@ export const getAllProducts = async (req, res) => {
     };
   }
 
-  if (minPrice || maxPrice) {
+  if (minPrice && maxPrice) {
     conditions.price = {
       gte: parseFloat(minPrice),
       lte: parseFloat(maxPrice),
@@ -63,20 +64,30 @@ export const getAllProducts = async (req, res) => {
 };
 
 export const getProductById = async (req, res) => {
-  if (req.params.id === null) {
-    return res.status(400).json({ error: "Please Prodive a product id" });
-  }
-  const { id } = req.params;
-  const query = {
-    where: {
-      id: id,
-    },
-  };
+  try {
+    if (req.params.id === null) {
+      return res.status(400).json({ error: "Please Prodive a product id" });
+    }
+    const { id } = req.params;
+    const response = await Prisma.product.findUnique({
+      where: {
+        id: id,
+      },
+      include: {},
+    });
 
-  const errMsq = "Error when fetching the product";
-  const notFound = `No product found with id : ${id}`;
-  const data = await productControllers(res, query, errMsq, notFound);
-  return data;
+    if (!response || response.length === 0) {
+      return res
+        .status(404)
+        .json({ message: `No product found with id : ${id}` });
+    }
+
+    res.status(200).json(response);
+  } catch (err) {
+    res
+      .status(400)
+      .json({ error: "Error when fetching the product" + err.message });
+  }
 };
 
 export const searchProducts = async (req, res) => {

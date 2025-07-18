@@ -1,5 +1,67 @@
 export const allProducts = [
   {
+    id: 83,
+    title: "Blue & Black Check Shirt",
+    description:
+      "The Blue & Black Check Shirt is a stylish and comfortable men's shirt featuring a classic check pattern. Made from high-quality fabric, it's suitable for both casual and semi-formal occasions.",
+    category: "mens-shirts",
+    price: 29.99,
+    discountPercentage: 15.35,
+    rating: 3.64,
+    stock: 38,
+    tags: ["clothing", "men's shirts"],
+    brand: "Fashion Trends",
+    sku: "MEN-FAS-BLU-083",
+    weight: 4,
+    dimensions: {
+      width: 27.49,
+      height: 23.73,
+      depth: 28.61,
+    },
+    warrantyInformation: "3 year warranty",
+    shippingInformation: "Ships in 3-5 business days",
+    availabilityStatus: "In Stock",
+    reviews: [
+      {
+        rating: 1,
+        comment: "Waste of money!",
+        date: "2025-04-30T09:41:02.053Z",
+        reviewerName: "Logan Lee",
+        reviewerEmail: "logan.lee@x.dummyjson.com",
+      },
+      {
+        rating: 5,
+        comment: "Very satisfied!",
+        date: "2025-04-30T09:41:02.053Z",
+        reviewerName: "Zachary Lee",
+        reviewerEmail: "zachary.lee@x.dummyjson.com",
+      },
+      {
+        rating: 4,
+        comment: "Fast shipping!",
+        date: "2025-04-30T09:41:02.053Z",
+        reviewerName: "Aurora Rodriguez",
+        reviewerEmail: "aurora.rodriguez@x.dummyjson.com",
+      },
+    ],
+    returnPolicy: "30 days return policy",
+    minimumOrderQuantity: 18,
+    meta: {
+      createdAt: "2025-04-30T09:41:02.053Z",
+      updatedAt: "2025-04-30T09:41:02.053Z",
+      barcode: "7148674604957",
+      qrCode: "https://cdn.dummyjson.com/public/qr-code.png",
+    },
+    images: [
+      "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/1.webp",
+      "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/2.webp",
+      "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/3.webp",
+      "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/4.webp",
+    ],
+    thumbnail:
+      "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/thumbnail.webp",
+  },
+  {
     id: 84,
     title: "Gigabyte Aorus Men Tshirt",
     description:
