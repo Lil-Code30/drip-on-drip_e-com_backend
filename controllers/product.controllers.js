@@ -8,9 +8,9 @@ const productControllers = async (res, query, errMsg, noResultMsq = "") => {
   try {
     const response = await Prisma.product.findMany(query);
 
-    if (!response || response.length === 0) {
-      return res.status(404).json({ message: noResultMsq });
-    }
+    // if (!response || response.length === 0) {
+    //   return res.status(404).json({ message: noResultMsq });
+    // }
 
     res.status(200).json(response);
   } catch (err) {
@@ -73,7 +73,11 @@ export const getProductById = async (req, res) => {
       where: {
         id: id,
       },
-      include: {},
+      include: {
+        category: true,
+        brand: true,
+        reviews: true,
+      },
     });
 
     if (!response || response.length === 0) {
