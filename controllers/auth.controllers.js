@@ -163,12 +163,16 @@ export const logoutUser = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
   try {
-    const { userId, code } = req.body;
+    const { code } = req.body;
+    const token = req.token;
+    const oldUser = req.user;
 
+    console.log(code, req.body);
+    const userId = oldUser.userId;
     const emailVerification = await Prisma.emailVerification.findFirst({
       where: {
-        userId: userId,
-        code: code,
+        userId,
+        code: String(code),
       },
     });
 
@@ -179,7 +183,12 @@ export const verifyEmail = async (req, res) => {
           where: { id: userId },
           data: { isVerified: true },
         });
-        return res.status(200).json({ message: "Email verified successfully" });
+        const newUser = { ...oldUser, isVerified: true };
+        return res.status(200).json({
+          message: "Account verified successfully",
+          user: newUser,
+          token,
+        });
       } else {
         return res.status(400).json({ message: "Verification code expired" });
       }
