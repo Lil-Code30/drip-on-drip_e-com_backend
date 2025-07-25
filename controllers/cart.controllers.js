@@ -3,11 +3,29 @@ import { v4 as uuid4 } from "uuid";
 
 export const getUserCart = async (req, res) => {
   try {
-    const { cartId } = req.body;
-    if (!cartId) {
-      return res.status(404).json({ message: "Please provide the cart id" });
+    const userId = parseInt(req.query.userId);
+    if (!userId) {
+      return res.status(401).json({
+        message: "User must be connected inorder to access his/her cart",
+      });
     }
 
+    const cart = await Prisma.cart.findUnique({
+      where: {
+        userId: userId,
+      },
+    });
+
+    if (!cart) {
+      await Prisma.cart.create({
+        data: {
+          id: uuid4(),
+          userId: userId,
+        },
+      });
+    }
+
+    const cartId = cart.id;
     const cartItems = await Prisma.cartItem.findMany({
       where: {
         cartId: cartId,
@@ -22,6 +40,10 @@ export const getUserCart = async (req, res) => {
         },
       },
     });
+
+    if (!cartItems) {
+      return res.status(404).json({ message: "No Product in your Cart" });
+    }
 
     res.status(200).json(cartItems);
   } catch (err) {
