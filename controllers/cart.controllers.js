@@ -56,49 +56,48 @@ export const getUserCart = async (req, res) => {
 export const addProductInCart = async (req, res) => {
   try {
     const { userId, price, productId, quantity } = req.body;
-
-    const userHasCart = await Prisma.cart.findUnique({
+    console.log(req.body);
+    const findCart = await Prisma.cart.findUnique({
       where: {
         userId: userId,
       },
     });
 
-    if (userHasCart) {
-      const cartItemRes = await Prisma.cartItem.create({
+    // verify if product is already in the user cart
+    const findProductInCart = await Prisma.cartItem.findFirst({
+      where: {
+        productId,
+        cartId: findCart.id,
+      },
+    });
+    if (findProductInCart) {
+      //update product quantity
+
+      await Prisma.cartItem.update({
+        where: {
+          id: findProductInCart.id,
+        },
         data: {
-          cartId: userHasCart.id,
+          quantity: findProductInCart.quantity + parseFloat(quantity),
+        },
+      });
+
+      return res
+        .status(201)
+        .json({ message: "Product's quantity successfully updated in cart" });
+    } else {
+      await Prisma.cartItem.create({
+        data: {
+          cartId: findCart.id,
           price: parseFloat(price),
           productId,
           quantity: parseInt(quantity),
         },
       });
 
-      console.log(cartItemRes);
-      res.status(201).json({ message: "Product successfully added to cart" });
-    } else {
-      const cartId = uuid4();
-      const cartRes = await Prisma.cart.create({
-        data: {
-          userId: userId,
-          id: cartId,
-        },
-      });
-
-      if (cartRes) {
-        const cartItemRes = await Prisma.cartItem.create({
-          data: {
-            cartId: cartId,
-            price: parseFloat(price),
-            productId,
-            quantity: parseInt(quantity),
-          },
-        });
-
-        console.log(cartItemRes);
-        res.status(201).json({ message: "Product successfully added to cart" });
-      } else {
-        return res.status(400).json({ error: "Error when creating user cart" });
-      }
+      return res
+        .status(201)
+        .json({ message: "Product successfully added to cart" });
     }
   } catch (err) {
     res
