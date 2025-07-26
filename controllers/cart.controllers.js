@@ -56,7 +56,6 @@ export const getUserCart = async (req, res) => {
 export const addProductInCart = async (req, res) => {
   try {
     const { userId, price, productId, quantity } = req.body;
-    console.log(req.body);
     const findCart = await Prisma.cart.findUnique({
       where: {
         userId: userId,
@@ -144,12 +143,17 @@ export const updateUserCart = async (req, res) => {
    * ]
    */
   try {
-    const { cartItems } = req.body;
+    const { userId, cartItems } = req.body;
+    const findCart = await Prisma.cart.findUnique({
+      where: {
+        userId: userId,
+      },
+    });
 
     await Promise.all(
       cartItems.map((item) =>
-        Prisma.cartItem.update({
-          where: { id: item.itemId },
+        Prisma.cartItem.updateMany({
+          where: { productId: item.productId, cartId: findCart.id },
           data: { quantity: item.quantity },
         })
       )
@@ -165,17 +169,24 @@ export const updateUserCart = async (req, res) => {
 
 export const deleteItemInCart = async (req, res) => {
   try {
-    const { itemId } = req.params;
+    const { productId, userId } = req.query;
 
-    if (!itemId) {
-      return res
-        .status(404)
-        .json({ message: "Please provide item id to be deleted" });
-    }
+    const findCart = await Prisma.cart.findUnique({
+      where: {
+        userId: parseInt(userId),
+      },
+    });
+
+    const findProductInCart = await Prisma.cartItem.findFirst({
+      where: {
+        productId,
+        cartId: findCart.id,
+      },
+    });
 
     await Prisma.cartItem.delete({
       where: {
-        id: parseInt(itemId),
+        id: findProductInCart.id,
       },
     });
 
@@ -185,25 +196,33 @@ export const deleteItemInCart = async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .json({ error: `Error when deleteing product in cart ${err.message}` });
+      .json({ error: `Error when deleteing product in cart ${err}` });
   }
 };
 
 export const clearUserCart = async (req, res) => {
   try {
-    const { cartId } = req.body;
-    await Prisma.cartItem.deleteMany({
+    const { userId } = req.params;
+    const findCart = await Prisma.cart.findUnique({
       where: {
-        cartId: cartId,
+        userId: parseInt(userId),
       },
     });
+    if (findCart) {
+      await Prisma.cartItem.deleteMany({
+        where: {
+          cartId: findCart.id,
+        },
+      });
 
-    res.status(200).json({ message: "Cart successfully clear" });
+      res.status(200).json({ message: "Cart successfully clear" });
+    }
   } catch (err) {
     res.status(500).json({ message: "Error when clearing the user cart " });
   }
 };
 
+//Admin work
 export const deletetCart = async (req, res) => {
   try {
     const { cartId } = req.body;
@@ -212,7 +231,6 @@ export const deletetCart = async (req, res) => {
         id: cartId,
       },
     });
-
     res.status(200).json({ message: "Cart deleted" });
   } catch (err) {
     res

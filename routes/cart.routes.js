@@ -14,9 +14,9 @@ const cartRoute = express.Router();
 cartRoute.get("/", getUserCart);
 cartRoute.post("/", addProductInCart);
 cartRoute.put("/", updateUserCart);
-cartRoute.delete("/:cartId", deletetCart);
-cartRoute.delete("/", clearUserCart);
-cartRoute.put("/:itemId", updateItemQtyInCart);
-cartRoute.delete("/:itemId", deleteItemInCart);
+cartRoute.delete("/user-cart", deleteItemInCart);
+cartRoute.delete("/:userId", clearUserCart);
+// cartRoute.delete("/:cartId", deletetCart);
+// cartRoute.put("/:itemId", updateItemQtyInCart);
 
 export default cartRoute;
