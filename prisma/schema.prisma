@@ -18,6 +18,9 @@ model User {
   isVerified   Boolean        @default(false)
   profile      Profile?
   refreshToken refreshToken[]
+
+  @@index([email])
+  @@index([createdAt])
 }
 
 model refreshToken {
@@ -101,6 +104,14 @@ model Product {
   brand                Brand       @relation(fields: [brandId], references: [id])
   category             Category    @relation(fields: [categoryId], references: [id])
   reviews              Reviews[]
+
+  @@index([categoryId])           // Filter by category
+  @@index([isActive])               // Show only active products
+  @@index([isFeatured])             // Homepage featured products
+  @@index([price])                // Price sorting/filtering
+  @@index([categoryId, isActive])   // Combined filters
+  @@index([isFeatured, isActive])     // Featured active products
+  @@index([createdAt])            // New arrivals
 }
 
 model Category {
@@ -126,6 +137,11 @@ model Reviews {
   userId        Int
   product       Product  @relation(fields: [productId], references: [id])
   user          Profile  @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([rating])
+  @@index([createdAt])
+  @@index([productId])
 }
 
 model Cart {
@@ -135,6 +151,9 @@ model Cart {
   updatedAt DateTime   @updatedAt
   profile   Profile    @relation(fields: [userId], references: [id])
   items     CartItem[]
+
+  @@index([userId])     // User's cart
+  @@index([updatedAt])  // Cleanup old carts
 }
 
 model CartItem {
@@ -145,17 +164,20 @@ model CartItem {
   cartId    String
   cart      Cart    @relation(fields: [cartId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
+
+  @@index([cartId])     // Items in cart
+  @@index([productId])  // Product popularity
 }
 
 model Order {
-  id                   Int         @id @default(autoincrement())
+  id                   String         @id 
   userId               Int
   totalPrice           Float
   status               String      @default("pending")
   subtotal             Float
   discount             Float       @default(0)
   tax                  Float       @default(0)
-  additionaalInfo      String?
+  additionalInfo      String?
   shippingAmount       Float       @default(0)
   currency             String      @default("CAD")
   createdAt            DateTime    @default(now())
@@ -165,7 +187,7 @@ model Order {
   billingAddressLine1  String
   billingAddressLine2  String?
   billingCity          String
-  billingState         String?
+  billingState         String
   billingPostalCode    String
   billingCountry       String
   billingPhoneNumber   String?
@@ -175,21 +197,46 @@ model Order {
   shippingAddressLine1 String
   shippingAddressLine2 String?
   shippingCity         String
-  shippingState        String?
+  shippingState        String
   shippingPostalCode   String
   shippingCountry      String
   shippingPhoneNumber  String?
   shippingEmail        String?
-  paymentMethod        String
-  paymentStatus        String      @default("unpaid")
-  paymentTransactionId String?
   user                 Profile     @relation(fields: [userId], references: [id])
   items                OrderItem[]
+  payments             Payment[]
+
+  @@index([userId])              // User's order history
+  @@index([status])              // Admin order management
+  @@index([createdAt])           // Order timeline/analytics
+  @@index([userId, status])      // User's pending orders
+  @@index([userId, createdAt])   // User's recent orders
+}
+
+model Payment {
+  id  String @id 
+  orderId String
+  amount Float
+  currency String @default("CAD")
+  paymentMethod String // "credit_card", "paypal", "stripe", etc.
+  paymentStatus String @default("pending") // "pending", "completed", "failed", "refunded", "cancelled"
+  transactionId        String?  // Gateway transaction ID
+  gatewayResponse      Json?    // Store full gateway response for debugging
+  failureReason        String?  // Reason if payment failed
+  processedAt          DateTime? // When payment was actually processed
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  order                Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([paymentStatus])
+  @@index([transactionId])
+  @@index([createdAt])      // Payment timeline
 }
 
 model OrderItem {
   id        Int      @id @default(autoincrement())
-  orderId   Int
+  orderId   String
   productId String
   quantity  Int      @default(1)
   price     Float
