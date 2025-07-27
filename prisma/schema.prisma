@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,189 +8,198 @@ datasource db {
 }
 
 model User {
-  id        Int  @id @default(autoincrement())
-  role      Role @default(USER)
-  email     String  @unique
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  profile Profile?
-  isActive Boolean @default(true)
-  isVerified Boolean @default(false)
+  id           Int            @id @default(autoincrement())
+  role         Role           @default(USER)
+  email        String         @unique
+  password     String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  isActive     Boolean        @default(true)
+  isVerified   Boolean        @default(false)
+  profile      Profile?
   refreshToken refreshToken[]
-}
-enum Role {
-  USER
-  ADMIN
 }
 
 model refreshToken {
-  id String @id
-  userId Int
-  user User @relation(fields: [userId], references: [id])
+  id          String   @id
+  userId      Int
   refresToken String
-  createdAt DateTime 
-  expiredAt DateTime
-  isRevoked Boolean @default(false)
-}
-model Profile {
-  id        Int  @id @default(autoincrement())
-  userId    Int  @unique
-  user      User @relation(fields: [userId], references: [id])
-  firstName String?
-  lastName  String?
-  bio       String?
-  gender  String?
-  avatarUrl String?
-  addressLine1 String?
-  addressLine2 String?
-  city String?
-  state String?
-  postalCode String?
-  country String?
-  phoneNumber String?
-  dateOfBirth DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  reviews Reviews[]
-  cart Cart? 
-  orders Order[]
+  createdAt   DateTime
+  isRevoked   Boolean  @default(false)
+  expiredAt   DateTime
+  user        User     @relation(fields: [userId], references: [id])
 }
 
-model  EmailVerification{
-  id Int @id @default(autoincrement())
-  userId Int
-  email String 
-  code String 
-  createdAt DateTime 
+model Profile {
+  id          Int         @id @default(autoincrement())
+  userId      Int         @unique
+  firstName   String?
+  lastName    String?
+  gender      String?
+  dateOfBirth DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  addresses   Addresses[]
+  cart        Cart?
+  orders      Order[]
+  user        User        @relation(fields: [userId], references: [id])
+  reviews     Reviews[]
+}
+
+model Addresses {
+  id           Int      @id @default(autoincrement())
+  nickname     String?
+  profileId    Int
+  isDefault    Boolean  @default(false)
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  state        String?
+  postalCode   String?
+  country      String?
+  phoneNumber  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  profile      Profile  @relation(fields: [profileId], references: [id])
+}
+
+model EmailVerification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  email     String
+  code      String
+  createdAt DateTime
   expiredAt DateTime
 }
 
 model Product {
-  id String @id @unique
-  name String
-  images String[]
-  description String
-  price Float
-  categoryId Int
-  isActive Boolean @default(true)
-  isFeatured Boolean @default(false)
-  category Category @relation(fields: [categoryId], references: [id])
-  discountPercentage Int? @default(0)
-  rating Float? @default(0)
-  stock Int @default(0)
-  tags String[]
-  brandId Int
-  brand Brand @relation(fields: [brandId], references: [id])
-  sku String @unique
-  weight Float?
-  dimensions Json? // Stores the whole object
-  warrantyInformation String?
-  shippingInformation String?
-  availabilityStatus String @default("in_stock")
-  reviews Reviews[]
-  returnPolicy String
-  minimumOrderQuantity Int @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  cartItems CartItem[]
-  orderItems OrderItem[]
+  id                   String      @id @unique
+  name                 String
+  images               String[]
+  description          String
+  price                Float
+  categoryId           Int
+  isActive             Boolean     @default(true)
+  isFeatured           Boolean     @default(false)
+  discountPercentage   Int?        @default(0)
+  rating               Float?      @default(0)
+  stock                Int         @default(0)
+  tags                 String[]
+  brandId              Int
+  sku                  String      @unique
+  weight               Float?
+  dimensions           Json?
+  warrantyInformation  String?
+  shippingInformation  String?
+  availabilityStatus   String      @default("in_stock")
+  returnPolicy         String
+  minimumOrderQuantity Int         @default(1)
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  cartItems            CartItem[]
+  orderItems           OrderItem[]
+  brand                Brand       @relation(fields: [brandId], references: [id])
+  category             Category    @relation(fields: [categoryId], references: [id])
+  reviews              Reviews[]
 }
 
 model Category {
-  id Int @id @default(autoincrement())
-  name String @unique
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
   products Product[]
 }
 
 model Brand {
-  id Int @id @default(autoincrement())
-  name String @unique
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
   products Product[]
 }
 
-model Reviews{
-  id Int @id @default(autoincrement())
-  comment String
-  rating Float
-  createdAt DateTime @default(now())
-  reviewerName String
+model Reviews {
+  id            Int      @id @default(autoincrement())
+  comment       String
+  rating        Float
+  createdAt     DateTime @default(now())
+  reviewerName  String
   reviewerEmail String?
+  productId     String
+  userId        Int
+  product       Product  @relation(fields: [productId], references: [id])
+  user          Profile  @relation(fields: [userId], references: [id])
+}
+
+model Cart {
+  id        String     @id @unique
+  userId    Int        @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  profile   Profile    @relation(fields: [userId], references: [id])
+  items     CartItem[]
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
   productId String
-  product Product @relation(fields: [productId], references: [id])
-  userId Int
-  user Profile @relation(fields: [userId], references: [id])
- 
+  quantity  Int     @default(1)
+  price     Float
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
-model Cart{
-  id String @id @unique 
-  userId Int @unique
-  profile Profile  @relation(fields: [userId], references: [id])
-  items CartItem[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model CartItem{
-  id Int @id @default(autoincrement())
-  productId String 
-  product Product  @relation(fields: [productId], references: [id])
-  quantity Int @default(1)
-  price Float
-  cartId String
-  cart Cart @relation(fields: [cartId], references: [id])
-}
-
-model Order{
-  id Int @id @default(autoincrement())
-  userId Int
-  user Profile @relation(fields: [userId], references: [id])
-  items OrderItem[]
-  totalPrice Float
-  status String @default("pending")
-  subtotal Float
-  discount Float @default(0)
-  tax Float @default(0)
-  additionaalInfo String?
-  shippingAmount Float @default(0)
-  currency String @default("CAD")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  billingFirstName String
-  billingLastName String
-  billingAddressLine1 String
-  billingAddressLine2 String?
-  billingCity String
-  billingState String?
-  billingPostalCode String
-  billingCountry String
-  billingPhoneNumber String?
-  billingEmail String
-  shippingFirstName String
-  shippingLastName String
+model Order {
+  id                   Int         @id @default(autoincrement())
+  userId               Int
+  totalPrice           Float
+  status               String      @default("pending")
+  subtotal             Float
+  discount             Float       @default(0)
+  tax                  Float       @default(0)
+  additionaalInfo      String?
+  shippingAmount       Float       @default(0)
+  currency             String      @default("CAD")
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  billingFirstName     String
+  billingLastName      String
+  billingAddressLine1  String
+  billingAddressLine2  String?
+  billingCity          String
+  billingState         String?
+  billingPostalCode    String
+  billingCountry       String
+  billingPhoneNumber   String?
+  billingEmail         String
+  shippingFirstName    String
+  shippingLastName     String
   shippingAddressLine1 String
   shippingAddressLine2 String?
-  shippingCity String
-  shippingState String?
-  shippingPostalCode String
-  shippingCountry String
-  shippingPhoneNumber String?
-  shippingEmail String?
-  paymentMethod String
-  paymentStatus String @default("unpaid")
+  shippingCity         String
+  shippingState        String?
+  shippingPostalCode   String
+  shippingCountry      String
+  shippingPhoneNumber  String?
+  shippingEmail        String?
+  paymentMethod        String
+  paymentStatus        String      @default("unpaid")
   paymentTransactionId String?
+  user                 Profile     @relation(fields: [userId], references: [id])
+  items                OrderItem[]
 }
 
-model OrderItem{
-  id Int @id @default(autoincrement())
-  orderId Int
-  order Order @relation(fields: [orderId], references: [id])
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
   productId String
-  product Product @relation(fields: [productId], references: [id])
-  quantity Int @default(1)
-  price Float
+  quantity  Int      @default(1)
+  price     Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
 }
