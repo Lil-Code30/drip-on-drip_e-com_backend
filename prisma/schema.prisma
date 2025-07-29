@@ -30,7 +30,7 @@ model refreshToken {
   createdAt   DateTime
   isRevoked   Boolean  @default(false)
   expiredAt   DateTime
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Profile {
@@ -45,7 +45,7 @@ model Profile {
   addresses   Addresses[]
   cart        Cart?
   orders      Order[]
-  user        User        @relation(fields: [userId], references: [id])
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   reviews     Reviews[]
 }
 
@@ -63,7 +63,7 @@ model Addresses {
   phoneNumber  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  profile      Profile  @relation(fields: [profileId], references: [id])
+  profile      Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 }
 
 model EmailVerification {
@@ -135,8 +135,8 @@ model Reviews {
   reviewerEmail String?
   productId     String
   userId        Int
-  product       Product  @relation(fields: [productId], references: [id])
-  user          Profile  @relation(fields: [userId], references: [id])
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user          Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([rating])
@@ -149,7 +149,7 @@ model Cart {
   userId    Int        @unique
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  profile   Profile    @relation(fields: [userId], references: [id])
+  profile   Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     CartItem[]
 
   @@index([userId])     // User's cart
@@ -162,8 +162,8 @@ model CartItem {
   quantity  Int     @default(1)
   price     Float
   cartId    String
-  cart      Cart    @relation(fields: [cartId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([cartId])     // Items in cart
   @@index([productId])  // Product popularity
@@ -202,7 +202,7 @@ model Order {
   shippingCountry      String
   shippingPhoneNumber  String?
   shippingEmail        String?
-  user                 Profile     @relation(fields: [userId], references: [id])
+  user                 Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
   items                OrderItem[]
   payments             Payment[]
 
@@ -242,7 +242,7 @@ model OrderItem {
   price     Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  order     Order    @relation(fields: [orderId], references: [id])
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id])
 }
 
