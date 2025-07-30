@@ -23,9 +23,11 @@ export const getUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const { token, user } = req;
-    const { firstName, lastName } = req.body;
+    const { firstName, lastName, gender, dateOfBirth } = req.body;
     // const {} = getDefinedQueryData(req.body);
-
+  let DOB_correctFormat = new Date(dateOfBirth);
+    DOB_correctFormat = DOB_correctFormat.toISOString();
+  
     const updateProfile = await Prisma.profile.update({
       where: {
         userId: parseInt(user.userId),
@@ -33,6 +35,8 @@ export const updateUserProfile = async (req, res) => {
       data: {
         firstName,
         lastName,
+        gender, 
+        dateOfBirth: DOB_correctFormat,
       },
     });
     if (updateProfile) {
@@ -41,6 +45,6 @@ export const updateUserProfile = async (req, res) => {
         .json({ token, message: "User profile updated successfully" });
     }
   } catch (err) {
-    res.status(500).json({ message: "Error when updating user profile" });
+    res.status(500).json({ message: "Error when updating user profile" + err.message });
   }
 };
