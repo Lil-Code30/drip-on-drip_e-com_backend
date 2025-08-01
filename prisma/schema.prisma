@@ -101,8 +101,8 @@ model Product {
   updatedAt            DateTime    @updatedAt
   cartItems            CartItem[]
   orderItems           OrderItem[]
-  brand                Brand       @relation(fields: [brandId], references: [id])
-  category             Category    @relation(fields: [categoryId], references: [id])
+  brand                Brand       @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  category             Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   reviews              Reviews[]
 
   @@index([categoryId])           // Filter by category

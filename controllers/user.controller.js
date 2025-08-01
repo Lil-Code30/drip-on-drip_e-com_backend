@@ -22,8 +22,10 @@ export const getUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const { token, user } = req;
-    const { firstName, lastName, dateOfBirth, gender } = req.body;
-    const DOB_correctFormat = new Date(dateOfBirth).toISOString();
+    const { firstName, lastName, gender, dateOfBirth } = req.body;
+    // const {} = getDefinedQueryData(req.body);
+    let DOB_correctFormat = new Date(dateOfBirth);
+    DOB_correctFormat = DOB_correctFormat.toISOString();
 
     const updateProfile = await Prisma.profile.update({
       where: {
@@ -42,15 +44,17 @@ export const updateUserProfile = async (req, res) => {
         .json({ message: "User profile updated successfully" });
     }
   } catch (err) {
-    res.status(500).json({ message: "Error when updating user profile" });
+    res
+      .status(500)
+      .json({ message: "Error when updating user profile" + err.message });
   }
 };
 
+//change user password
 export const changeUserPassword = async (req, res) => {
   try {
     const { token, user } = req;
     const { oldPassword, newPassword } = req.body;
-
     const userInfos = await Prisma.user.findUnique({
       where: {
         id: user.userId,
@@ -81,7 +85,44 @@ export const changeUserPassword = async (req, res) => {
       return res.status(401).json({ message: "Old password incorrect" });
     }
   } catch (err) {
-    res.status(500).json({ error: "Error when changing user password" });
+    res
+      .status(500)
+      .json({ error: "Error when changing user password " + err.message });
+  }
+};
+
+// api to change user address
+export const changeUserAddress = async (req, res) => {
+  const {
+    profileId,
+    nickname,
+    phoneNumber,
+    addressLine1,
+    addressLine2,
+    city,
+    stateOrProvince,
+    postalCode,
+    country,
+  } = req.body;
+  try {
+    const createNewAddress = await Prisma.addresses.create({
+      data: {
+        profileId: parseInt(profileId),
+        nickname: nickname,
+        phoneNumber,
+        addressLine1,
+        addressLine2,
+        city,
+        state: stateOrProvince,
+        postalCode,
+        country,
+      },
+    });
+
+    console.log(req.body);
+    res.status(201).json({ message: "New user address created successfully" });
+  } catch (err) {
+    res.status(500).json(`error ${err.message}`);
   }
 };
 /**

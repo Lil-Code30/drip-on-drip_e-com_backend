@@ -67,7 +67,8 @@ export function getTokenFromHeaders(headers) {
 
 // send email function
 export async function sendEmailVerificationCode(email, id) {
-  // Configure nodemailer with environment variables
+  try {
+    // Configure nodemailer with environment variables
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || "localhost",
     port: parseInt(process.env.SMTP_PORT) || 25,
@@ -106,6 +107,11 @@ export async function sendEmailVerificationCode(email, id) {
         expiredAt,
       },
     });
+  }
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send email");
+    
   }
 }
 
