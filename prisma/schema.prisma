@@ -192,14 +192,14 @@ model Order {
   billingCountry       String
   billingPhoneNumber   String?
   billingEmail         String
-  shippingFirstName    String
-  shippingLastName     String
-  shippingAddressLine1 String
+  shippingFirstName    String?
+  shippingLastName     String?
+  shippingAddressLine1 String?
   shippingAddressLine2 String?
-  shippingCity         String
-  shippingState        String
-  shippingPostalCode   String
-  shippingCountry      String
+  shippingCity         String?
+  shippingState        String?
+  shippingPostalCode   String?
+  shippingCountry      String?
   shippingPhoneNumber  String?
   shippingEmail        String?
   user                 Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
