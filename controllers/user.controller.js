@@ -119,12 +119,49 @@ export const changeUserAddress = async (req, res) => {
       },
     });
 
-    console.log(req.body);
     res.status(201).json({ message: "New user address created successfully" });
   } catch (err) {
     res.status(500).json(`error ${err.message}`);
   }
 };
+
+// api to get all user addresses
+export const getUserAddresses = async (req, res) => {
+  try {
+    const { profileId } = req.query;
+    const addresses = await Prisma.addresses.findMany({
+      where: {
+        profileId: parseInt(profileId),
+      },
+    });
+
+    res.status(200).json(addresses);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error when fetching user address " + err.message });
+  }
+};
+
+// api to delete user addresses
+export const deleteUserAddress = async (req, res) => {
+  try {
+    const { addressId } = req.query;
+
+    await Prisma.addresses.delete({
+      where: {
+        id: parseInt(addressId),
+      },
+    });
+
+    res.status(200).json({ message: "User's address successfully deleted" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error when delete user address " + err.message });
+  }
+};
+
 /**
  * Profile todo api
  * -
