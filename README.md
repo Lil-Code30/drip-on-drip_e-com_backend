@@ -70,9 +70,9 @@ The application will be available at `http://localhost:3000`.
 - `DELETE /cart/user-cart`: Delete an item from the cart.
 - `DELETE /cart/:userId`: Clear the user's cart.
 
-### Payment
+### Checkout
 
-- `POST /payment/create-payment-intent`: Create a payment intent.
+- `POST /api/checkout/create-payment-intent`: Create a payment intent.
 
 ### Products
 
