@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import Prisma from "../utils/dbConnection.js";
 import { generateAlphaKey } from "@neylorxt/generate-unique-key";
+import { sendOrderEmail } from "../utils/utils.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -49,9 +50,12 @@ export const createPaymentIntent = async (req, res) => {
       amount: (totalAmount * 100).toFixed(0), // Stripe expects the amount in cents
       currency: currency.toLowerCase(),
       metadata: {
-        userId: userId,
+        userId: userProfile.id,
         itemCount: orderItems.length,
         orderId: orderId,
+        customerEmail: checkoutData.billingEmail,
+        customerName:
+          checkoutData.billingFirstName + " " + checkoutData.billingLastName,
       },
       description: `Payment for ${orderItems.length} items`,
       automatic_payment_methods: {
@@ -249,9 +253,19 @@ export const handleStripeWebhook = async (req, res) => {
           });
 
           console.log(`Order ${orderId} confirmed after successful payment`);
-
+          // get user order infos
+          // const userOrder = await Prisma.order.findUnique({
+          //   where: {
+          //     id: orderId,
+          //   },
+          //   include: {
+          //     orderItem: true,
+          //     profile: true,
+          //   },
+          // });
           // Add any additional success logic here:
           // - Send confirmation email
+          // const sendEmail = await sendOrderEmail();
           // - Update inventory
           // - Trigger fulfillment process
           // - Send notifications

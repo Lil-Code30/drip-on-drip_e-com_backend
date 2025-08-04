@@ -161,3 +161,88 @@ export const deleteUserAddress = async (req, res) => {
       .json({ message: "Error when delete user address " + err.message });
   }
 };
+
+// api to get user order history
+export const getAllUserOrders = async (req, res) => {
+  try {
+    const { user } = req;
+    const userId = user.userId;
+
+    const profile = await Prisma.profile.findFirst({
+      where: {
+        userId: parseInt(userId),
+      },
+    });
+
+    if (!profile) {
+      return res.status(404).json({ message: "user profile not found " });
+    }
+
+    const userOrders = await Prisma.order.findMany({
+      where: {
+        userId: profile.id,
+      },
+      select: {
+        id: true,
+        totalPrice: true,
+        status: true,
+        createdAt: true,
+        billingFirstName: true,
+        billingLastName: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    res.status(200).json(userOrders);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error when fetching user's orders " + error.message });
+  }
+};
+
+// api to get user order details
+export const getOrderDetails = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { user } = req;
+    const userId = user.userId;
+
+    const profile = await Prisma.profile.findFirst({
+      where: {
+        userId: parseInt(userId),
+      },
+    });
+
+    if (!profile) {
+      return res.status(404).json({ message: "user profile not found " });
+    }
+    const orderDetails = await Prisma.order.findFirst({
+      where: {
+        id: orderId,
+        userId: profile.id,
+      },
+      include: {
+        items: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                images: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.status(200).json(orderDetails);
+  } catch (error) {
+    res
+      .status(400)
+      .json({ message: "Error when fetching order details " + error.message });
+  }
+};

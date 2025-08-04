@@ -7,6 +7,8 @@ import {
   changeUserAddress,
   getUserAddresses,
   deleteUserAddress,
+  getAllUserOrders,
+  getOrderDetails,
 } from "../controllers/user.controller.js";
 
 const userRoute = express.Router();
@@ -17,5 +19,7 @@ userRoute.put("/change-password", authMiddleware, changeUserPassword);
 userRoute.post("/add-address", authMiddleware, changeUserAddress);
 userRoute.get("/get-addresses", authMiddleware, getUserAddresses);
 userRoute.delete("/delete-address", authMiddleware, deleteUserAddress);
+userRoute.get("/orders", authMiddleware, getAllUserOrders);
+userRoute.get("/orders/:orderId", authMiddleware, getOrderDetails);
 
 export default userRoute;
