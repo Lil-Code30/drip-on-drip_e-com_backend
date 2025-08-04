@@ -46,66 +46,66 @@ The application will be available at `http://localhost:3000`.
 
 ## Available Scripts
 
--   `npm start`: Starts the application.
--   `npm run watch`: Starts the application in watch mode.
--   `npm run maildev`: Starts MailDev for email testing.
+- `npm start`: Starts the application.
+- `npm run watch`: Starts the application in watch mode.
+- `npm run maildev`: Starts MailDev for email testing.
 
 ## API Endpoints
 
 ### Authentication
 
--   `POST /auth/register`: Register a new user.
--   `POST /auth/login`: Login a user.
--   `POST /auth/logout`: Logout a user.
--   `POST /auth/verify-email`: Verify a user's email.
--   `GET /auth/request-email-verification-code`: Request a new email verification code.
--   `GET /auth/refresh-token`: Refresh a user's access token.
--   `PUT /auth/change-password`: Change a user's password.
+- `POST /auth/register`: Register a new user.
+- `POST /auth/login`: Login a user.
+- `POST /auth/logout`: Logout a user.
+- `POST /auth/verify-email`: Verify a user's email.
+- `GET /auth/request-email-verification-code`: Request a new email verification code.
+- `GET /auth/refresh-token`: Refresh a user's access token.
+- `PUT /auth/change-password`: Change a user's password.
 
 ### Cart
 
--   `GET /cart`: Get the user's cart.
--   `POST /cart`: Add a product to the cart.
--   `PUT /cart`: Update the user's cart.
--   `DELETE /cart/user-cart`: Delete an item from the cart.
--   `DELETE /cart/:userId`: Clear the user's cart.
+- `GET /cart`: Get the user's cart.
+- `POST /cart`: Add a product to the cart.
+- `PUT /cart`: Update the user's cart.
+- `DELETE /cart/user-cart`: Delete an item from the cart.
+- `DELETE /cart/:userId`: Clear the user's cart.
 
 ### Payment
 
--   `POST /payment/create-payment-intent`: Create a payment intent.
+- `POST /payment/create-payment-intent`: Create a payment intent.
 
 ### Products
 
--   `GET /products`: Get all products.
--   `GET /products/search`: Search for products.
--   `GET /products/category/:category`: Get products by category.
--   `GET /products/featuredProducts`: Get featured products.
--   `GET /products/latestProducts`: Get the latest products.
--   `GET /products/:id`: Get a product by its ID.
+- `GET /products`: Get all products.
+- `GET /products/search`: Search for products.
+- `GET /products/category/:category`: Get products by category.
+- `GET /products/featuredProducts`: Get featured products.
+- `GET /products/latestProducts`: Get the latest products.
+- `GET /products/:id`: Get a product by its ID.
 
 ### Reviews
 
--   `GET /reviews/:id`: Get all reviews for a product.
--   `POST /reviews/:id`: Add a review to a product.
--   `PUT /reviews/:reviewId`: Edit a product review.
--   `DELETE /reviews/:reviewId`: Delete a product review.
+- `GET /reviews/:id`: Get all reviews for a product.
+- `POST /reviews/:id`: Add a review to a product.
+- `PUT /reviews/:reviewId`: Edit a product review.
+- `DELETE /reviews/:reviewId`: Delete a product review.
 
 ### User
 
--   `GET /user/profile`: Get the user's profile.
--   `PUT /user/profile`: Update the user's profile.
--   `PUT /user/change-password`: Change the user's password.
--   `POST /user/add-address`: Add a new address for the user.
--   `GET /user/get-addresses`: Get all the user's addresses.
--   `DELETE /user/delete-address`: Delete a user's address.
+- `GET /user/profile`: Get the user's profile.
+- `PUT /user/profile`: Update the user's profile.
+- `PUT /user/change-password`: Change the user's password.
+- `POST /user/add-address`: Add a new address for the user.
+- `GET /user/get-addresses`: Get all the user's addresses.
+- `DELETE /user/delete-address`: Delete a user's address.
 
 ## Key Dependencies
 
--   **Express.js**: Web framework for Node.js.
--   **Prisma**: Next-generation ORM for Node.js and TypeScript.
--   **PostgreSQL**: The database used for this project.
--   **Bcrypt**: A library for hashing passwords.
--   **JSON Web Token (JWT)**: For generating and verifying JSON Web Tokens.
--   **Stripe**: For handling payments.
--   **Nodemailer**: For sending emails.
--   **MailDev**: For testing emails.
+- **Express.js**: Web framework for Node.js.
+- **Prisma**: Next-generation ORM for Node.js and TypeScript.
+- **PostgreSQL**: The database used for this project.
+- **Bcrypt**: A library for hashing passwords.
+- **JSON Web Token (JWT)**: For generating and verifying JSON Web Tokens.
+- **Stripe**: For handling payments.
+- **Nodemailer**: For sending emails.
+- **MailDev**: For testing emails.

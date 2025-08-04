@@ -1,0 +1,9 @@
+import express from "express";
+import { createPaymentIntent } from "../controllers/checkout.controllers.js";
+import { authMiddleware } from "../middlewares/auth.middlewares.js";
+
+const checkoutRoute = express.Router();
+
+checkoutRoute.post("/create-payment-intent", createPaymentIntent);
+
+export default checkoutRoute;

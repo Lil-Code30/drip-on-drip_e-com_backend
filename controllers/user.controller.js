@@ -161,13 +161,3 @@ export const deleteUserAddress = async (req, res) => {
       .json({ message: "Error when delete user address " + err.message });
   }
 };
-
-/**
- * Profile todo api
- * -
- * - APi to get/update user addresses - edit user address, delete address
- * - API to change user password
- * - api to get user order -history - view order
- * - api for tracking order : to be done
- * -  api to close account or delete account
- */

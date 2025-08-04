@@ -1,0 +1,65 @@
+Test Profile 1 - Successful Payment
+Personal Information:
+
+Name: John Smith
+Email: john.smith.test@example.com
+Phone: (555) 123-4567
+
+Billing Address:
+
+Street: 123 Main Street
+City: New York
+State: NY
+ZIP Code: 10001
+Country: United States
+
+Card Information:
+
+Card Number: 4242424242424242 (Visa)
+Expiry Date: 12/28
+CVC: 123
+Cardholder Name: John Smith
+
+
+Test Profile 2 - Successful Payment (Different Card Type)
+Personal Information:
+
+Name: Sarah Johnson
+Email: sarah.johnson.test@example.com
+Phone: (555) 987-6543
+
+Billing Address:
+
+Street: 456 Oak Avenue, Apt 2B
+City: Los Angeles
+State: CA
+ZIP Code: 90210
+Country: United States
+
+Card Information:
+
+Card Number: 5555555555554444 (Mastercard)
+Expiry Date: 06/29
+CVC: 456
+Cardholder Name: Sarah Johnson
+
+
+Additional Test Scenarios
+If you want to test different payment outcomes:
+Declined Card:
+
+Card Number: 4000000000000002
+Use any future expiry date and CVC
+This will simulate a declined payment
+
+Insufficient Funds:
+
+Card Number: 4000000000009995
+Use any future expiry date and CVC
+This will simulate insufficient funds
+
+3D Secure Authentication:
+
+Card Number: 4000000000003220
+Use any future expiry date and CVC
+This will trigger 3D Secure authentication flow

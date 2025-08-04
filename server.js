@@ -1,17 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import Stripe from "stripe";
 import productRouter from "./routes/product.routes.js";
 import reviewsRoute from "./routes/reviews.routes.js";
 import cartRoute from "./routes/cart.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import userRoute from "./routes/user.routes.js";
-import PaymentRoute from "./routes/payment.routes.js";
+import checkoutRoute from "./routes/checkout.routes.js";
 import cookieParser from "cookie-parser";
 dotenv.config();
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -43,7 +40,7 @@ app.use("/api/product/reviews", reviewsRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRoute);
-app.use("/api/payment", PaymentRoute);
+app.use("/api/checkout", checkoutRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
