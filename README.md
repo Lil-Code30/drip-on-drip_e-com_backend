@@ -42,7 +42,14 @@ This is the backend for the DripOnDrip e-commerce platform. It is a Node.js appl
 npm start
 ```
 
-The application will be available at `http://localhost:3000`.
+To test the Stripe webhook, run the following command:
+
+```bash
+PORT = 8000 // the port where your server is running
+stripe listen --forward-to localhost:${PORT}/webhook/stripe-webhook
+```
+
+The application will be available at `http://localhost:${PORT}`.
 
 ## Available Scripts
 
@@ -98,6 +105,8 @@ The application will be available at `http://localhost:3000`.
 - `POST /user/add-address`: Add a new address for the user.
 - `GET /user/get-addresses`: Get all the user's addresses.
 - `DELETE /user/delete-address`: Delete a user's address.
+- `GET /user/orders`: Get all the user's orders.
+- `GET /user/orders/:orderId`: Get the user's order details.
 
 ## Key Dependencies
 
