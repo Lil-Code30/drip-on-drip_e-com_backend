@@ -63,3 +63,8 @@ This will simulate insufficient funds
 Card Number: 4000000000003220
 Use any future expiry date and CVC
 This will trigger 3D Secure authentication flow
+
+/// credentials 
+Name: Sarah Johnson
+Email: sarah.johnson.test@example.com
+password : azerty123

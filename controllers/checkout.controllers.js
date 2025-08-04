@@ -68,7 +68,7 @@ export const createPaymentIntent = async (req, res) => {
         id: orderId,
         userId: userProfile.id,
         totalPrice: totalAmount,
-        status: "confirmed",
+        status: "pending",
         subtotal: parseFloat(subTotal.toFixed(2)),
         tax: parseFloat((GST + QST).toFixed(2)),
         currency,
@@ -213,7 +213,6 @@ export const handleStripeWebhook = async (req, res) => {
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   let event;
-
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
@@ -234,8 +233,7 @@ export const handleStripeWebhook = async (req, res) => {
           await Prisma.order.update({
             where: { id: orderId },
             data: {
-              status: "confirmed",
-              updatedAt: new Date(),
+              status: "Paid",
             },
           });
 
@@ -246,7 +244,7 @@ export const handleStripeWebhook = async (req, res) => {
               paymentStatus: "succeeded",
               transactionId: paymentIntent.latest_charge || paymentIntent.id,
               gatewayResponse: JSON.stringify(paymentIntent),
-              updatedAt: new Date(),
+              processedAt: new Date(),
             },
           });
 

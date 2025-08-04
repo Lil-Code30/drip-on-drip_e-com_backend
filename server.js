@@ -8,6 +8,7 @@ import authRouter from "./routes/auth.routes.js";
 import userRoute from "./routes/user.routes.js";
 import checkoutRoute from "./routes/checkout.routes.js";
 import cookieParser from "cookie-parser";
+import { handleStripeWebhook } from "./controllers/checkout.controllers.js";
 dotenv.config();
 
 const app = express();
@@ -33,6 +34,14 @@ const corsOption = {
 app.use(cors(corsOption));
 //  Use cookie-parser middleware
 app.use(cookieParser());
+app.use("/webhook", express.raw({ type: "application/json" }));
+
+app.post(
+  "/webhook/stripe-webhook",
+  express.raw({ type: "application/json" }),
+  handleStripeWebhook
+);
+
 app.use(express.json());
 
 app.use("/api/products", productRouter);
@@ -44,4 +53,7 @@ app.use("/api/checkout", checkoutRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(
+    `Webhook endpoint: http://localhost:${PORT}/webhook/stripe-webhook`
+  );
 });
