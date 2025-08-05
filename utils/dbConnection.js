@@ -1,11 +1,5 @@
 import { PrismaClient } from "../generated/prisma/index.js";
-
-const globalForPrisma = globalThis;
-
-const Prisma = globalForPrisma.Prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.Prisma = Prisma;
-
+const Prisma = new PrismaClient();
 export default Prisma;
 
 // PGADMIN_DB_URL=postgresql://postgres:1234@localhost:5432/dripondrip
