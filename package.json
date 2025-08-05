@@ -19,7 +19,7 @@
     "url": "https://github.com/Lil-Code30/drip-on-drip_e-com_backend/issues"
   },
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "node seed.js"
   },
   "homepage": "https://github.com/Lil-Code30/drip-on-drip_e-com_backend#readme",
   "dependencies": {
