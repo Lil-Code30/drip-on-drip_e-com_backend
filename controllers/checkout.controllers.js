@@ -1,8 +1,9 @@
 import Stripe from "stripe";
 import Prisma from "../utils/dbConnection.js";
+import dotenv from "dotenv";
 import { generateAlphaKey } from "@neylorxt/generate-unique-key";
 import { sendOrderEmail } from "../utils/utils.js";
-
+dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Create a payment intent

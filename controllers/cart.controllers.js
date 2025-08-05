@@ -47,6 +47,7 @@ export const getUserCart = async (req, res) => {
 
     res.status(200).json(cartItems);
   } catch (err) {
+    console.log(err);
     res
       .status(500)
       .json({ error: `Error when fetching user cart ${err.message}` });

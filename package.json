@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "watch": "node --watch server.js",
-    "maildev": "maildev"
+    "maildev": "maildev",
+    "seed": "node prisma/seed.js"
   },
   "repository": {
     "type": "git",
@@ -17,9 +18,6 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Lil-Code30/drip-on-drip_e-com_backend/issues"
-  },
-  "prisma": {
-    "seed": "node seed.js"
   },
   "homepage": "https://github.com/Lil-Code30/drip-on-drip_e-com_backend#readme",
   "dependencies": {
