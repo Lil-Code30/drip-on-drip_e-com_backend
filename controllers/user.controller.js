@@ -215,6 +215,11 @@ export const getOrderDetails = async (req, res) => {
         userId: parseInt(userId),
       },
     });
+    if (!orderId) {
+      return res
+        .status(404)
+        .json({ message: "Please provide an order id to get it's details" });
+    }
 
     if (!profile) {
       return res.status(404).json({ message: "user profile not found " });
@@ -238,6 +243,10 @@ export const getOrderDetails = async (req, res) => {
         },
       },
     });
+
+    if (!orderDetails) {
+      return res.status(404).json({ message: "Order not found " });
+    }
 
     res.status(200).json(orderDetails);
   } catch (error) {
