@@ -2,14 +2,11 @@ import Prisma from "../utils/dbConnection.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import jwt from "jsonwebtoken";
-
 import {
-  verifyToken,
-  sendEmailVerificationCode,
   userWithoutPassword,
   generateToken,
   generateRefreshToken,
-  isTokenExpired,
+  sendEmailVerificationCode,
 } from "../utils/utils.js";
 
 // Register a new user
@@ -21,7 +18,6 @@ export const registerUser = async (req, res) => {
         .status(400)
         .json({ message: "Email and password are required" });
     }
-
     // verify if email already exist
     const emailExist = await Prisma.user.findFirst({
       where: {
@@ -62,9 +58,6 @@ export const registerUser = async (req, res) => {
         now.getTime() + 30 * 24 * 60 * 60 * 1000
       ).toISOString();
 
-      // const now = new Date();
-      // const createdAt = now; // Store as Date object
-      // const expiredAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // Store as Date objec
       await Prisma.refreshToken.create({
         data: {
           id: uuid(),
@@ -76,7 +69,17 @@ export const registerUser = async (req, res) => {
       });
 
       // send email verification code
-      await sendEmailVerificationCode(userInfos.userEmail, userInfos.userId);
+      const sendEmailCode = await sendEmailVerificationCode(
+        createUser.email,
+        createUser.id
+      );
+
+      // if (!sendEmailCode) {
+      //   return res.status(500).json({
+      //     message:
+      //       "Fail to send verification code. Account created, login and request another verification code.",
+      //   });
+      // }
 
       // send refreshToken in a cookie
       res.cookie("refreshToken", refreshToken, {
@@ -96,6 +99,7 @@ export const registerUser = async (req, res) => {
       throw new Error("Error when creating user");
     }
   } catch (err) {
+    console.log(err);
     res
       .status(500)
       .json({ message: "Error when creating user " + err.message });
@@ -214,7 +218,12 @@ export const requestEmailVerification = async (req, res) => {
     }
 
     // send email verification code
-    await sendEmailVerificationCode(user.email, userId);
+    const sendCode = await sendEmailVerificationCode(user.email, userId);
+    if (!sendCode) {
+      return res
+        .status(500)
+        .json({ message: "Error when sending email verification code" });
+    }
 
     return res.status(200).json({ message: "Verification email sent" });
   } catch (err) {

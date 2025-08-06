@@ -9,6 +9,8 @@ import userRoute from "./routes/user.routes.js";
 import checkoutRoute from "./routes/checkout.routes.js";
 import cookieParser from "cookie-parser";
 import { handleStripeWebhook } from "./controllers/checkout.controllers.js";
+import sendEmail from "./utils/nodemailer.js";
+import { sendEmailVerificationCode } from "./utils/utils.js";
 dotenv.config();
 
 const app = express();
@@ -50,6 +52,21 @@ app.use("/api/cart", cartRoute);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRoute);
 app.use("/api/checkout", checkoutRoute);
+
+app.get("/send-email", async (req, res) => {
+  try {
+    // await sendEmail({
+    //   to: "lokoismael9@gmail.com",
+    //   subject: "Email verification code ",
+    //   template: "welcome",
+    //   context: { fullName: "Loko Ismael" },
+    // });
+    await sendEmailVerificationCode("lokoismael9@gmail.com", 300);
+    res.status(200).send("Email sent ");
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

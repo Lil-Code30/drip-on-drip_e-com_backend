@@ -1,20 +1,6 @@
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 import Prisma from "./dbConnection.js";
-
-// Configure nodemailer with environment variables
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "localhost",
-  port: parseInt(process.env.SMTP_PORT) || 25,
-  secure: process.env.SMTP_SECURE === "true",
-  auth: {
-    user: process.env.SMTP_USER || "",
-    pass: process.env.SMTP_PASS || "",
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
+import sendEmail from "./nodemailer.js";
 
 // Generate a SKU for a product
 // Example: "ABC-1234-5678"
@@ -81,36 +67,30 @@ export function getTokenFromHeaders(headers) {
 
 // send email function
 export async function sendEmailVerificationCode(email, id) {
-  try {
-    // send verification code
-    const emailCode = emailVerificationCode();
+  // send verification code
+  const emailCode = emailVerificationCode();
 
-    const mailOptions = {
-      from: "dripondrip@gmail.com",
-      to: email,
-      subject: "Email Verification Code",
-      text: `This is your email verification code: ${emailCode}`,
-      html: `<p> This is your email verification code: <strong>${emailCode}</strong></p>`,
-    };
+  const emailSend = await sendEmail({
+    to: email,
+    subject: "Email Verification Code",
+    template: "sendcode",
+    context: { code: emailCode },
+  });
 
-    const emailSend = await transporter.sendMail(mailOptions);
-    if (emailSend) {
-      const now = new Date();
-      const createdAt = now.toISOString();
-      const expiredAt = new Date(now.getTime() + 10 * 60 * 1000).toISOString();
-      await Prisma.emailVerification.create({
-        data: {
-          userId: id,
-          email: email,
-          code: emailCode,
-          createdAt,
-          expiredAt,
-        },
-      });
-    }
-  } catch (error) {
-    console.error("Error sending email:", error);
-    throw new Error("Failed to send email");
+  if (emailSend) {
+    const now = new Date();
+    const createdAt = now.toISOString();
+    const expiredAt = new Date(now.getTime() + 10 * 60 * 1000).toISOString();
+
+    await Prisma.emailVerification.create({
+      data: {
+        userId: id,
+        email: email,
+        code: emailCode,
+        createdAt,
+        expiredAt,
+      },
+    });
   }
 }
 // send email after order successfully paid
