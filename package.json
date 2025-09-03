@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Lil-Code30/drip-on-drip_e-com_backend#readme",
   "dependencies": {
+    "@faker-js/faker": "^9.0.0",
     "@neylorxt/generate-unique-key": "^1.0.0",
     "@prisma/adapter-pg": "^6.11.1",
     "@prisma/client": "^6.11.1",
@@ -31,10 +32,12 @@
     "dotenv": "^17.2.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "@faker-js/faker": "^9.0.0",
+    "morgan": "^1.10.1",
     "stripe": "^18.4.0",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "maildev": "^2.2.1",
