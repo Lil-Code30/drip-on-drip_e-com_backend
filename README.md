@@ -4,9 +4,9 @@ This is the backend for the DripOnDrip e-commerce platform. It is a Node.js appl
 
 ## Live API Link
 
-The API is live at: `https://drip-on-drip-e-com-backend.onrender.com/api`
+The API is live at: `https://drip-on-drip-e-com-backend.onrender.com/api/v1`
 
-You can test the products endpoint at: `https://drip-on-drip-e-com-backend.onrender.com/api/products`
+You can test the products endpoint at: `https://drip-on-drip-e-com-backend.onrender.com/api/v1/products`
 
 ## Getting Started
 
@@ -64,56 +64,64 @@ The application will be available at `http://localhost:${PORT}`.
 - `npm run maildev`: Starts MailDev for email testing.
 - `npm run seed`: Seeds the database.
 
-## API Endpoints
+## API Endpoints v1
+
+> All v1 endpoints are prefixed with `/api/v1`.
 
 ### Authentication
 
-- `POST /api/auth/register`: Register a new user.
-- `POST /api/auth/login`: Login a user.
-- `POST /api/auth/logout`: Logout a user.
-- `POST /api/auth/verify-email`: Verify a user's email.
-- `GET /api/auth/request-email-verification-code`: Request a new email verification code.
-- `GET /api/auth/refresh-token`: Refresh a user's access token.
-- `PUT /api/auth/change-password`: Change a user's password.
+- `POST /api/v1/auth/register`: Register a new user.
+- `POST /api/v1/auth/login`: Login a user.
+- `POST /api/v1/auth/logout`: Logout a user.
+- `POST /api/v1/auth/verify-email`: Verify a user's email.
+- `GET /api/v1/auth/request-email-verification-code`: Request a new email verification code.
+- `GET /api/v1/auth/refresh-token`: Refresh a user's access token.
+- `PUT /api/v1/auth/change-password`: Change a user's password.
 
 ### Cart
 
-- `GET /api/cart`: Get the user's cart.
-- `POST /api/cart`: Add a product to the cart.
-- `PUT /api/cart`: Update the user's cart.
-- `DELETE /api/cart/user-cart`: Delete an item from the cart.
-- `DELETE /api/cart/:userId`: Clear the user's cart.
+- `GET /api/v1/cart`: Get the user's cart.
+- `POST /api/v1/cart`: Add a product to the cart.
+- `PUT /api/v1/cart`: Update the user's cart.
+- `DELETE /api/v1/cart/user-cart`: Delete an item from the cart.
+- `DELETE /api/v1/cart/:userId`: Clear the user's cart.
 
 ### Checkout
 
-- `POST /api/checkout/create-payment-intent`: Create a payment intent.
+- `POST /api/v1/checkout/create-payment-intent`: Create a payment intent.
 
 ### Products
 
-- `GET /api/products`: Get all products.
-- `GET /api/products/search`: Search for products.
-- `GET /api/products/category/:category`: Get products by category.
-- `GET /api/products/featuredProducts`: Get featured products.
-- `GET /api/products/latestProducts`: Get the latest products.
-- `GET /api/products/:id`: Get a product by its ID.
+- `GET /api/v1/products`: Get all products.
+- `GET /api/v1/products/search`: Search for products.
+- `GET /api/v1/products/category/:category`: Get products by category.
+- `GET /api/v1/products/featuredProducts`: Get featured products.
+- `GET /api/v1/products/latestProducts`: Get the latest products.
+- `GET /api/v1/products/:id`: Get a product by its ID.
 
 ### Reviews
 
-- `GET /api/product/reviews/:id`: Get all reviews for a product.
-- `POST /api/product/reviews/:id`: Add a review to a product.
-- `PUT /api/product/reviews/:reviewId`: Edit a product review.
-- `DELETE /api/product/reviews/:reviewId`: Delete a product review.
+- `GET /api/v1/product/reviews/:id`: Get all reviews for a product.
+- `POST /api/v1/product/reviews/:id`: Add a review to a product.
+- `PUT /api/v1/product/reviews/:reviewId`: Edit a product review.
+- `DELETE /api/v1/product/reviews/:reviewId`: Delete a product review.
 
 ### User
 
-- `GET /api/user/profile`: Get the user's profile.
-- `PUT /api/user/profile`: Update the user's profile.
-- `PUT /api/user/change-password`: Change the user's password.
-- `POST /api/user/add-address`: Add a new address for the user.
-- `GET /api/user/get-addresses`: Get all the user's addresses.
-- `DELETE /api/user/delete-address`: Delete a user's address.
-- `GET /api/user/orders`: Get all the user's orders.
-- `GET /api/user/orders/:orderId`: Get the user's order details.
+- `GET /api/v1/user/profile`: Get the user's profile.
+- `PUT /api/v1/user/profile`: Update the user's profile.
+- `PUT /api/v1/user/change-password`: Change the user's password.
+- `POST /api/v1/user/add-address`: Add a new address for the user.
+- `GET /api/v1/user/get-addresses`: Get all the user's addresses.
+- `DELETE /api/v1/user/delete-address`: Delete a user's address.
+- `GET /api/v1/user/orders`: Get all the user's orders.
+- `GET /api/v1/user/orders/:orderId`: Get the user's order details.
+
+## API Endpoints v2
+
+> All v2 endpoints are prefixed with `/api/v2`.
+
+Work in progress...
 
 ## Key Dependencies
 
