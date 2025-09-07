@@ -1,4 +1,4 @@
-import Prisma from "../utils/dbConnection.js";
+import Prisma from "../../utils/dbConnection.js";
 import { v4 as uuid4 } from "uuid";
 
 export const getUserCart = async (req, res) => {

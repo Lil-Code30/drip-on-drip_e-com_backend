@@ -7,9 +7,9 @@ import {
   requestEmailVerification,
   refreshToken,
   changerUserPassword,
-} from "../controllers/auth.controllers.js";
+} from "../../controllers/v1/auth.controllers.js";
 
-import { authMiddleware } from "../middlewares/auth.middlewares.js";
+import { authMiddleware } from "../../middlewares/auth.middlewares.js";
 
 const authRouter = express.Router();
 

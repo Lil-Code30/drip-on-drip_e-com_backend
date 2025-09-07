@@ -2,6 +2,9 @@
 utils/data.js
 credentials.txt
 
+# JetBrains IDE config
+.idea/
+
 # Logs
 logs
 *.log

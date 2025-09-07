@@ -1,4 +1,4 @@
-import Prisma from "../utils/dbConnection.js";
+import Prisma from "../../utils/dbConnection.js";
 
 // custom function
 const reviewsControllers = async (res, query, errMsg, noResultMsq = "") => {

@@ -1,16 +1,17 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import productRouter from "./routes/product.routes.js";
-import reviewsRoute from "./routes/reviews.routes.js";
-import cartRoute from "./routes/cart.routes.js";
-import authRouter from "./routes/auth.routes.js";
-import userRoute from "./routes/user.routes.js";
-import checkoutRoute from "./routes/checkout.routes.js";
+
+// Routes v1
+import productRouter from "./routes/v1/product.routes.js";
+import reviewsRoute from "./routes/v1/reviews.routes.js";
+import cartRoute from "./routes/v1/cart.routes.js";
+import authRouter from "./routes/v1/auth.routes.js";
+import userRoute from "./routes/v1/user.routes.js";
+import checkoutRoute from "./routes/v1/checkout.routes.js";
 import cookieParser from "cookie-parser";
-import { handleStripeWebhook } from "./controllers/checkout.controllers.js";
-import sendEmail from "./utils/nodemailer.js";
-import { sendEmailVerificationCode } from "./utils/utils.js";
+import { handleStripeWebhook } from "./controllers/v1/checkout.controllers.js";
+
 dotenv.config();
 
 const app = express();
@@ -46,12 +47,13 @@ app.post(
 
 app.use(express.json());
 
-app.use("/api/products", productRouter);
-app.use("/api/product/reviews", reviewsRoute);
-app.use("/api/cart", cartRoute);
-app.use("/api/auth", authRouter);
-app.use("/api/user", userRoute);
-app.use("/api/checkout", checkoutRoute);
+// --- VERSION 1 --- //
+app.use("/api/v1/products", productRouter);
+app.use("/api/v1/product/reviews", reviewsRoute);
+app.use("/api/v1/cart", cartRoute);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/checkout", checkoutRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
