@@ -1,4 +1,4 @@
-import Prisma from "../utils/dbConnection.js";
+import Prisma from "../../utils/dbConnection.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import jwt from "jsonwebtoken";
@@ -7,7 +7,7 @@ import {
   generateToken,
   generateRefreshToken,
   sendEmailVerificationCode,
-} from "../utils/utils.js";
+} from "../../utils/utils.js";
 
 // Register a new user
 export const registerUser = async (req, res) => {

@@ -1,4 +1,4 @@
-import Prisma from "../utils/dbConnection.js";
+import Prisma from "../../utils/dbConnection.js";
 
 // NOTE add, update and delete (Admin) Product will be done later
 export const addNewProduct = async (res, req) => {};

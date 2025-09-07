@@ -4,7 +4,7 @@ import {
   addProductReview,
   editProductReview,
   deleteProductReview,
-} from "../controllers/review.controllers.js";
+} from "../../controllers/v1/review.controllers.js";
 
 const reviewsRoute = express.Router();
 

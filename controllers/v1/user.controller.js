@@ -1,4 +1,4 @@
-import Prisma from "../utils/dbConnection.js";
+import Prisma from "../../utils/dbConnection.js";
 import bcrypt from "bcrypt";
 
 export const getUserProfile = async (req, res) => {

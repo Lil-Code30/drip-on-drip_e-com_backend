@@ -1,5 +1,5 @@
 import express from "express";
-import { authMiddleware } from "../middlewares/auth.middlewares.js";
+import { authMiddleware } from "../../middlewares/auth.middlewares.js";
 import {
   getUserProfile,
   updateUserProfile,
@@ -9,7 +9,7 @@ import {
   deleteUserAddress,
   getAllUserOrders,
   getOrderDetails,
-} from "../controllers/user.controller.js";
+} from "../../controllers/v1/user.controller.js";
 
 const userRoute = express.Router();
 

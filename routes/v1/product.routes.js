@@ -6,7 +6,7 @@ import {
   getProductsByCategory,
   getIsFeatureProduct,
   getlatestProducts,
-} from "../controllers/product.controllers.js";
+} from "../../controllers/v1/product.controllers.js";
 
 const productRouter = express.Router();
 
